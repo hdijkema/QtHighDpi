@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     ::SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #if QT_VERSION_MAJOR == 5 && QT_VERSION_MINOR >= 14
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+    QCoreApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
 #else
 #ifdef Q_OS_LINUX // X11
@@ -30,3 +30,6 @@ int main(int argc, char *argv[])
     
  ```
  
+One would think setting `Qt::AA_EnableHighDpiScaling` and `Qt::HighDpiScaleFactorRoundingPolicy::PassThrough` (or other) would be enough, but your Qt application (<= 5.14) won't scale properly when the monitor DPI changes and your application users need to logout/login each time the monitor changes. 
+
+Using `::SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);` helps to prevent this at the cost of some vagueness in the icons. 
